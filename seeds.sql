@@ -17,3 +17,9 @@ INSERT INTO role
 ('Human Resources', '86000.00', '4'),
 ('Head of Engineering', '75000.00', '2'),
 ('Head of Sales', '950000.00', '3');
+
+INSERT INTO employee
+(first_name, last_name, role_id, manager_id) values 
+('Sasha','Brown','4', '0'),
+('Rafat','Abonaur','3','0'),
+('Linda','Wu','3','2');

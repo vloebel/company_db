@@ -41,4 +41,3 @@ CREATE TABLE employee (
     ON UPDATE CASCADE
     ON DELETE SET NULL
 );
-u
