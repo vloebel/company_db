@@ -2,8 +2,8 @@ INSERT INTO department
 (name) values 
 ('Administration'),
 ('Engineering'),
-('Sales and Marketing'),
-('Personnel');
+('Sales and Marketing');
+
 
 INSERT INTO role
 (title, salary, department_id) values 
@@ -11,15 +11,13 @@ INSERT INTO role
 ('Engineer', '40000.00', '2'),
 ('Database', '40000.00', '2'),
 ('Sales', '22000.00', '3'),
-('Sales Engineer', '45000.00', '3'),
-('Technical Writer', '38000.00','2'),
-('General Manager', '75000.00', '1'),
-('Human Resources', '86000.00', '4'),
-('Head of Engineering', '75000.00', '2'),
-('Head of Sales', '950000.00', '3');
+('Manager', '75000.00', '1');
 
 INSERT INTO employee
 (first_name, last_name, role_id, manager_id) values 
-('Sasha','Brown','4', '0'),
-('Rafat','Abonaur','3','0'),
+('Sasha','Brown','4', '2'),
+('Rafat','Abonaur','1','0'),
 ('Linda','Wu','3','2');
+('Jackson','Baretta','1','2');
+('Peregrin','Nguyen','2','6');
+('Cory','Lawrence','1','0');
