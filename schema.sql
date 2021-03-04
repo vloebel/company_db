@@ -4,15 +4,12 @@ USE company_db;
 DROP TABLE IF EXISTS department;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS employee;
-
-
 CREATE TABLE department (
   id INT (11) AUTO_INCREMENT NOT NULL,
   name VARCHAR(30) NOT NULL,
   UNIQUE (id),
   PRIMARY KEY (id)
 );
-/* note: a foreign key in one table references the primary key in another */
 CREATE TABLE role (
   id INT (11) AUTO_INCREMENT NOT NULL,
   title VARCHAR(30) NOT NULL, 
