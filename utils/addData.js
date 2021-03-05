@@ -4,31 +4,47 @@ const pressAnyKey = require('press-any-key');
 const db = require('../db');
 const connection = require('../db/connection');
 const { viewDept, viewRoles, viewEmp } = require('./viewData');
+const promptAction = require('./promptAction');
 
 
+// const promptDeptName = () => {
+//   return inquirer.prompt([
+//     {
+//       type: "input",
+//       name: "deptName",
+//       message: "Enter Department Name:",
+//       validate: inputStr => {
+//         if (inputStr) return true;
+//         else return false;
+//       }
+//     }
+//   ]);
+// }
 
-function addDept() {
-  inquirer.prompt([
+addDept = () => {
+  return inquirer.prompt([
     {
       type: "input",
       name: "deptName",
-      message: "New Department Name:",
+      message: "Enter Department Name:",
       validate: inputStr => {
         if (inputStr) return true;
         else return false;
       }
-    },
-  ]).then(deptData => {
-    db.addDepartment(deptData.deptName)
-      .then(([data]) => {
-        console.log("\n");
-        console.table(data);
-        pressAnyKey()
-          .then(() => {
-            promptAction();
-          });
-      });
-  });
+    }
+  ])
+    .then(promptData => {
+      db.addDepartment(promptData.deptName)
+        .then(([data]) => {
+          console.log("\n");
+          console.table(data);
+          // press any key to continue
+          pressAnyKey()
+            .then(() => {
+              promptAction();
+            });
+        })
+    })
 }
 
 function addRole() {
@@ -66,7 +82,7 @@ function addRole() {
     // let user select from a list of departments
     db.selectAllDepartments()
       .then(([data]) => {
-        console.log(`data is ${data}`)
+        console.log("after selecting depts data is ", {data});
         inquirer.prompt([
           {
             type: 'list',
@@ -79,26 +95,12 @@ function addRole() {
           console.log(newName, newSalary, newDepartment);
         }
         );
-      }
-      );
-  }//then deptData
-  );
+      }); //then db.selectAllDepartments
+  });//then deptData
 }
 
 
 
-
-//     db.addDepartment(deptData.deptName)
-//       .then(([data]) => {
-//         console.log("\n");
-//         console.table(data);
-//         pressAnyKey()
-//           .then(() => {
-//             promptAction();
-//           });
-//       });
-// });
-// }
 
 function addEmp() {
   db.selectAllRoles()
