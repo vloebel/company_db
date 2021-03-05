@@ -15,56 +15,62 @@ const promptAction = () => {
       name: "newAction",
       message: "Use arrow keys to select:",
       choices: [
-        "View Employees",
         "View Departments",
-        "View Employees by Manager",
+        "View Roles",
+        "View Employees",
+        "Add Department",
+        "Add Role",
         "Add Employee",
-        "Remove Employee",
-        "Update Employee Information",
-        "Add Employee Role",
         "Update Employee Role",
-        "Update Employee Manager",
         "Exit"
       ],
     },
   ]).then(inquirerData => {
     switch (inquirerData.newAction) {
-      case "View Employees":
-        viewEmp();
-        return ;
-      case "View Roles":
-          viewRole();
-          return;
       case "View Departments":
         viewDept();
         return;
-
+      case "View Roles":
+        viewRoles();
+        return;    
+      case "View Employees":
+        viewEmp();
+        return ;
+      case "Add Department":
+        addDept();
+        return;
+      case "Add Role":
+        addRole();
+      return;
       case "Add Employee":
-        console.log("creating query: addEmployee();");
+        addEmp();
         return;
-
-      case "Remove Employee":
-        console.log("creating query: removeEmployee();");
-        return;
-
-      case "Update Employee Information":
-        console.log("creating query: updateEmployeeInfo();");
-
-      case "Add Employee Role":
-        console.log("creating query: addEmployeeRole();");
-
       case "Update Employee Role":
-        console.log("creating query: updateEmployeeRole();");
-
-      case "Update Employee Manager":
-        console.log("creating query: updateEmployeeManager();");
-
+        updateEmpRole();
       case "Exit":
-      default:
+      default: //same as Exit
         return;
     }
   });
 };
+
+function viewDept(){
+  db.selectAllDepartments()
+    .then(([data]) => {
+      console.log("\n");
+      console.table(data);
+      promptAction();
+    })
+}
+
+function viewRoles(){
+  db.selectAllRoles()
+    .then(([data]) => {
+      console.log("\n");
+      console.table(data);
+      promptAction();
+    })
+}
 
 function viewEmp(){
   db.selectAllEmployees()
@@ -75,12 +81,45 @@ function viewEmp(){
   })
 }
 
-function viewDept(){
-  db.selectAllDepartments()
+function addDept() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "deptName",
+      message: "New Department Name:",
+      validate: inputStr => {
+        if (inputStr) return true;
+        else return false;
+      }
+    },
+  ]).then(deptData => {
+    db.addDepartment(deptData.deptName)
+      .then(([data]) => {
+        console.log("\n");
+        console.table(data);
+      });
+    });
+    promptAction();
+}
+
+function addEmp (){
+  db.selectAllRoles()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
   })
+}
+function addEmp (){
+  db.selectAllRoles()
+    .then(([data]) => {
+      console.log("\n");
+      console.table(data);
+  })
+}
+
+
+function updateEmpRole(){
+  console.log("updating employee role");
 }
 
 module.exports = promptAction; 

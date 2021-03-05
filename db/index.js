@@ -6,24 +6,46 @@ class DB {
     this.connection = connection;
   }
 
-  selectAllEmployees() {
-    return this.connection.promise().query(
-      `SELECT id, first_name, last_name 
-      FROM employee`);
-  }
-
   selectAllDepartments() {
-    return this.connection.promise().query('SELECT id, name FROM department');
-  }
-
-  //id will be passed in to the method
-  selectEmployeeById(id) {
     return this.connection.promise().query(
-      `SELECT id, first_name, last_name 
-      FROM employee 
-      WHERE id = ?;`,
-      id);
-  }
+      `SELECT id, name 
+      FROM department`);
+    }
+    
+    selectAllRoles() {
+      return this.connection.promise().query(
+        `SELECT id, title, salary, department_id 
+        FROM role`);
+      }
+      
+      selectAllEmployees() {
+        return this.connection.promise().query(
+          `SELECT id, first_name, last_name 
+          FROM employee`);
+      }
+  
+  addDepartment(name) {
+    return this.connection.promise().query(
+      `INSERT into department SET ?`,
+      {
+        name:name
+      });
+   }
+    
+   addRole(title, salary, department_id) {
+    return this.connection.promise().query(
+      `INSERT into department SET?`,
+      {
+        title: title,
+        salary: salary,
+        department_id: department_id
+      });
+   }
+  
+  
+  
+  
+  
 
   selectEmployeeById() {
     return this.connection.promise().query('SELECT id, first_name, last_name FROM employee WHERE id = ?;', id);
