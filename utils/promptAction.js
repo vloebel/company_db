@@ -105,8 +105,8 @@ function addDept() {
   ]).then(deptData => {
     db.addDepartment(deptData.deptName)
       .then(([data]) => {
-        console.log("\n");
-        console.table(data);
+        // console.log("\n");
+        // console.table(data);
         promptAction()
       })
   })
@@ -118,7 +118,7 @@ function addRole() {
     {
       type: "input",
       name: "roleName",
-      message: "What is the title of this role?",
+      message: "New role title:",
       validate: inputStr => {
         if (inputStr) return true;
         else return false;
@@ -133,7 +133,7 @@ function addRole() {
           if (/^[0-9]+$/.test(inputStr)) {
             return true;
           } else {
-            console.log(`\n Please enter salary as a whole number in dollars, for example, 25000:`);
+            console.log(`\n Salary in dollars, for example, 25000:`);
             return false;
           }
           // no input  
@@ -144,42 +144,35 @@ function addRole() {
   ]).then(deptData => {
     newName = deptData.roleName;
     newSalary = deptData.salary;
-    // let user select from a list of departments
+
+    console.log(`New dept info name = ${deptData.roleName} sal = ${deptData.salary}`);
+
     db.selectAllDepartments()
-      .then(([data]) => {
-        console.log(`data is ${data}`)
+      .then(([depts]) => {
+        //------------------------------
         inquirer.prompt([
           {
-            type: 'list',
-            name: department,
-            message: 'Add role to which department?',
-            choices: [data],
+            type: "list",
+            name: "selectedDept",
+            message: `\nSelect a department:`,
+            choice: depts.map(d => ({ value: d.id, name: d.name }))
           }
-        ]).then(moreDeptData => {
-          newDepartment = moreDeptData.department;
-          console.log(newName, newSalary, newDepartment);
-        }
-        );
-      }
-      );
-  }//then deptData
-  );
-}
+        ])
+          .then((moreData) => {
+            console.log(newTitle, newSalary, moreData.id)
+          })
+        })
 
 
+        //--------------------------------
+
+      }) //deptData
 
 
-//     db.addDepartment(deptData.deptName)
-//       .then(([data]) => {
-//         console.log("\n");
-//         console.table(data);
-//         pressAnyKey()
-//           .then(() => {
-//             promptAction();
-//           });
-//       });
-// });
-// }
+      .then(() => promptAction());
+      
+  }
+
 
 function addEmp() {
   db.selectAllRoles()
