@@ -63,12 +63,10 @@ function viewDept() {
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      // press any key to continue
-      pressAnyKey()
-        .then(() => {
-          promptAction();
-        });
     })
+    .then(() =>
+      promptAction()
+    );
 }
 // calls db method to display role table
 function viewRoles() {
@@ -76,11 +74,10 @@ function viewRoles() {
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      pressAnyKey()
-        .then(() => {
-          promptAction();
-        });
     })
+    .then(() =>
+      promptAction()
+    );
 }
 // calls db method to display employee table
 function viewEmp() {
@@ -88,11 +85,10 @@ function viewEmp() {
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      pressAnyKey()
-        .then(() => {
-          promptAction();
-        });
-    });
+    })
+  .then(() =>
+    promptAction()
+  );
 }
 
 function addDept() {
@@ -111,12 +107,9 @@ function addDept() {
       .then(([data]) => {
         console.log("\n");
         console.table(data);
-        pressAnyKey()
-          .then(() => {
-            promptAction();
-          });
-      });
-  });
+        promptAction()
+      })
+  })
 }
 
 function addRole() {
