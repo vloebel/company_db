@@ -1,31 +1,24 @@
 const mysql = require('mysql2');
+const db = require('./db');
+promptAction = require('./utils/promptAction')
 
+console.log(
+`===========================================================
+=============  Classy Coding Company Presents  ============
+================= CLASSY COMPANY MANAGER ================== 
+  Your one stop shop for viewing and updating
+    information about our departments, employee roles,
+    and most importantly, our classy employees.
+===========================================================
 
-var connection = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'bootcamp',
-  password: 'bootcamp', 
-  database : 'company_db',
-});
+  `);
 
-connection.connect(err => {
-  if (err) throw err;
-  console.log('connected as id ' + connection.threadId);
-  afterConnection();
-});
-
-afterConnection = () => {
-  connection.query('SELECT * FROM employee', function(err, res) {
-    if (err) throw err;
-    console.log(res);
-  });
-  console.log(`===================================`);
-  connection.query(`SELECT * FROM employees where firstName =? `, function(err, res) {
-    if (err) throw err;
-    console.log(res);
-  });
-  connection.end();
-
-};
-
+promptAction()
+  .then(() => {
+    console.log(`
+===========================================================
+                  Keep it Classy!
+===========================================================
+`)
+  }
+);

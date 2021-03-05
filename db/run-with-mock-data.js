@@ -1,4 +1,4 @@
-const promptAction = require  ('./utils/promptAction');
+const promptAction = require  ('../utils/promptAction');
 
 //  Department mockup
 let mockDept = [
