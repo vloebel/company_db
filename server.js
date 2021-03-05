@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const db = require('./db');
-promptAction = require('./utils/promptAction')
+promptAction = require('./utils/promptAction');
 
 console.log(
 `===========================================================
@@ -10,7 +10,6 @@ console.log(
     information about our departments, employee roles,
     and most importantly, our classy employees.
 ===========================================================
-
   `);
 
 promptAction()
@@ -19,6 +18,6 @@ promptAction()
 ===========================================================
                   Keep it Classy!
 ===========================================================
-`)
+`);
   }
-);
+  );

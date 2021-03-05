@@ -1,7 +1,9 @@
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
-const mysql = require('mysql2');
+const pressAnyKey = require('press-any-key');
+// const mysql = require('mysql2');
 const db = require('../db');
+const  connection  = require('../db/connection');
 /////////////////////////////////////
 // function promptAction
 //  * prompts for the next action on on the database
@@ -48,37 +50,48 @@ const promptAction = () => {
       case "Update Employee Role":
         updateEmpRole();
       case "Exit":
-      default: //same as Exit
+        connection.end();
         return;
     }
   });
 };
 
+// calls db method to display department table
 function viewDept(){
   db.selectAllDepartments()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      promptAction();
+      // press any key to continue
+      pressAnyKey()
+        .then(() => {
+          promptAction();
+        });
     })
 }
-
+// calls db method to display role table
 function viewRoles(){
   db.selectAllRoles()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      promptAction();
+      pressAnyKey()
+      .then(() => {
+        promptAction();
+      });
     })
 }
-
+// calls db method to display employee table
 function viewEmp(){
   db.selectAllEmployees()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
-      promptAction();
-  })
+      pressAnyKey()
+      .then(() => {
+        promptAction();
+      });
+    })
 }
 
 function addDept() {
@@ -116,7 +129,6 @@ function addEmp (){
       console.table(data);
   })
 }
-
 
 function updateEmpRole(){
   console.log("updating employee role");
