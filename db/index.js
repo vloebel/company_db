@@ -1,4 +1,4 @@
-const { removeListener } = require('./connection');
+// const { removeListener } = require('./connection');
 const connection = require('./connection');
 
 class DB {
@@ -30,17 +30,17 @@ class DB {
       {
         name:name
       });
-   }
+  }
     
-   addRole(title, salary, department_id) {
+  addRole(title, salary, department_id) {
     return this.connection.promise().query(
-      `INSERT into department SET?`,
+      `INSERT into department SET ?`,
       {
         title: title,
         salary: salary,
         department_id: department_id
       });
-   }
+  }
   
   
   
