@@ -88,8 +88,8 @@ function viewEmp() {
       console.log(`${dash}\n`);
     })
     .then(() => {
-    promptAction();
-  })
+      promptAction();
+    })
 }
 
 function addDept() {
@@ -106,7 +106,7 @@ function addDept() {
   ]).then(deptData => {
     db.addDepartment(deptData.deptName)
       .then(([data]) => {
-         promptAction()
+        promptAction()
       })
   })
 }
@@ -155,12 +155,11 @@ function addRole() {
           }
         ])
           .then((newData) => {
-            console.log({ newData })
             db.addRole(newName, newSal, newData.selectedDept)
-            .then(([data]) => {
-              promptAction()
-            })
-        })
+              .then(([data]) => {
+                promptAction()
+              })
+          })
       })
   }) //deptData
 
@@ -169,7 +168,7 @@ function addRole() {
 
 function addEmp() {
   // prompt for first and last name
-  var newFirstName, newLastName, newRole, newManagerId;
+  var empFirstName, empLastName, empRole, empManagerId;
   prompt([
     {
       type: 'input',
@@ -206,55 +205,51 @@ function addEmp() {
       }
     },
 
-  ]).then(empData => {
+  ]).then(emp => {
     // force proper noun case
-    newFirstName = (
-      empData.firstName.charAt(0).toUpperCase() +
-      empData.firstName.slice(1).toLowerCase());
-    newLastName = (
-      empData.lastName.charAt(0).toUpperCase() +
-      empData.lastName.slice(1).toLowerCase());
+    empFirstName = (
+      emp.firstName.charAt(0).toUpperCase() +
+      emp.firstName.slice(1).toLowerCase());
 
-    // get a list of roles from db for user to pick from
+    empLastName = (
+      emp.lastName.charAt(0).toUpperCase() +
+      emp.lastName.slice(1).toLowerCase());
+
+    // get roles from db for user to pick from
     db.selectAllRoles()
       .then(([roles]) => {
         prompt([
           {
             type: "list",
             name: "selectedRole",
-            message: `\nSelect a role for ${newFirstName} ${newLastName}:`,
+            message: `\nSelect a role for ${empFirstName} ${empLastName}:`,
             choices: roles.map(r => ({ value: r.id, name: r.title }))
           }
-        ])
-          .then((newData) => {
-            newRole = newData.selectedRole;
-            console.log(newFirstName, newLastName, newRole);
+        ])//assign the role
+          .then((inqData) => {
+            empRole = inqData.selectedRole;
+            console.log(empFirstName, empLastName, empRole);
+          }) // list employees for user to pick manager 
+          .then(() => {
+            db.selectAllEmployees()
+              .then(([employee]) => {
+                prompt([
+                  {
+                    type: "list",
+                    name: "selectedMgr",
+                    message: `\nSelect a manager for ${newFirstName} ${newLastName}:`,
+                    choices: employee.map(emp => ({ value: emp.id, name: `${emp.firstName} ${emp.lastName}` }))
+                  }
+                ])
+                  .then((mgrData) => {
+                    empManagerId = mgrData.selectedMgr;
+                    console.log(newFirstName, newLastName, newRole, empManagerId);
+                  })
+                  .then(() => promptAction());
+              })
           })
-      }) //prompt for role
-  }) //prompt for empData]git
-    .then(() => {
-      // get a list of employees for user to pick manager
-      db.selectAllEmployees()
-        .then(([employee]) => {
-          prompt([
-            {
-              type: "list",
-              name: "selectedMgr",
-              message: `\nSelect a manager for ${newFirstName} ${newLastName}:`,
-              choices: employee.map(emp => ({ value: emp.id, name: `${emp.firstName} ${emp.lastName}` }))
-            }
-          ])
-            .then((newData) => {
-              newManagerId = newData.selectedMgr;
-              console.log(newFirstName, newLastName, newRole, newManagerId);
-            })
-        })
-    }) // selectAllEmployees
-
-    //--------------------------------
-
-    .then(() => promptAction());
-
+      })
+  })
 }
 
 function updateEmpRole() {
@@ -271,7 +266,7 @@ function updateEmpRole() {
 //////////////////////////////
 
 function startPrompt() {
-  return(promptAction())
+  return (promptAction())
 }
 
 
