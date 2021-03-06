@@ -305,7 +305,7 @@ function addEmp() {
 
 function updateEmpRole() {
   console.log("updating employee role");
-  
+  let empId, empRole;
   db.selectAllEmployees()
     // prompt to pick employee
     .then(([employee]) => {
@@ -313,19 +313,35 @@ function updateEmpRole() {
         {
           type: "list",
           name: "selectedEmp",
-          message: `\nSelect the employee to update:`,
+          message: `${dash}\nSelect an employee to update:\n${dash}`,
           choices: employee.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
         }
-      ])//a
-        .then((mgrData) => {
-          employeeId = mgrData.selectedEmp;
-          // xxxxxxx Insert Employee into Database
-          db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
+      ])//save the ID
+        .then((empData) => {
+          empId = empData.selectedEmp;
+          // prompt to pick role
+          db.selectAllRoles()
+        .then(([roles]) => {
+          prompt([
+            {
+              type: "list",
+              name: "selectedRole",
+              message: `\nSelect the new role:`,
+              choices: roles.map(r => ({ value: r.id, name: r.title }))
+            }
+          ])//assign the role
+            .then((roleData) => {
+              empRole = roleData.selectedRole;
+              console.log(`ready to update employee ${empId} with role: ${empRole}`);
+            })
+
+          // update employee role in Database
+          db.updateEmployeeRole(empId, empRole)
           .then (()=>
             promptAction()
           );
-        }) // manager assigned
-    })//employees displayed and mgr selcted}
+        }) // role assigned
+    })//roles displayed and  selcted}
  
 
 
