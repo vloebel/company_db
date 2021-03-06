@@ -45,9 +45,15 @@ class DB {
       });
   }
   
-  
-  selectEmployeeById() {
-    return this.connection.promise().query('SELECT id, first_name, last_name FROM employee WHERE id = ?;', id);
+  addEmployee (fname, lname, role, mgr) {
+    return this.connection.promise().query(
+      `INSERT into employee SET ?`,
+      {
+        first_name: fname,
+        last_name: lname,
+        role_id: role,
+        manager_id: mgr
+      });
   }
 
 }

@@ -5,16 +5,19 @@ const { prompt } = require('inquirer');
 const dash = "-----------------------------------"
 
 
-/////////////////////////////////////
-// function promptAction prompts
-// for the next action on the database
-//////////////////////////////////////////////
+///////////////////////////////////////////////////////
+//  FUNCTION promptAction 
+//  Node/inquirer  Command Line Interface
+// -Displays the menu of available functions
+// -Calls the function based on user selection
+// -ON EXIT closes the database connection
+///////////////////////////////////////////////////////
 
 const promptAction = () => {
   return prompt([
     {
       type: "list",
-      name: "newAction",
+      name: "action",
       message: "Use arrow keys to select:\n",
       choices: [
         "View Departments",
@@ -28,7 +31,7 @@ const promptAction = () => {
       ],
     },
   ]).then(inquirerData => {
-    switch (inquirerData.newAction) {
+    switch (inquirerData.action) {
       case "View Departments":
         viewDept();
         return;
@@ -55,6 +58,11 @@ const promptAction = () => {
     }
   });
 };
+///////////////////////////////////////////////////////
+//  FUNCTION viewDept
+//  -Retrieves a list of departments from the db
+//    and displays for user
+///////////////////////////////////////////////////////
 
 function viewDept() {
   db.selectAllDepartments()
@@ -67,6 +75,11 @@ function viewDept() {
       promptAction();
     })
 }
+///////////////////////////////////////////////////////
+//  FUNCTION viewRolse
+//  -Retrieves a list of roles from the db
+//    and displays for user
+///////////////////////////////////////////////////////
 
 function viewRoles() {
   db.selectAllRoles()
@@ -79,6 +92,11 @@ function viewRoles() {
       promptAction();
     })
 }
+///////////////////////////////////////////////////////
+//  FUNCTION viewEmp
+//  -Retrieves a list of employees from the db
+//    and displays for user
+///////////////////////////////////////////////////////
 
 function viewEmp() {
   db.selectAllEmployees()
@@ -91,6 +109,11 @@ function viewEmp() {
       promptAction();
     })
 }
+///////////////////////////////////////////////////////
+//  FUNCTION addDept
+//  -Prompts for the name of a new department
+//  -Adds new department to the db
+///////////////////////////////////////////////////////
 
 function addDept() {
   prompt([
@@ -110,6 +133,13 @@ function addDept() {
       })
   })
 }
+///////////////////////////////////////////////////////
+//  FUNCTION addRole
+//  -Prompts for the name of a new employee role
+//  -Retrieves departments from db and prompts for 
+//    selection
+//  -Adds new role to the db
+///////////////////////////////////////////////////////
 
 function addRole() {
 
@@ -162,9 +192,16 @@ function addRole() {
           })
       })
   }) //deptData
-
 }
 
+///////////////////////////////////////////////////////
+//  FUNCTION addEmp
+//  -Prompts for employee first and last name
+//  -Retrieves roles from db for user to select for employee
+//  -Retrieves employees from db for user to select as the 
+//     employee's manager
+//  -Adds the new employee to the db
+///////////////////////////////////////////////////////
 
 function addEmp() {
   // prompt for first and last name
@@ -217,6 +254,7 @@ function addEmp() {
 
     // get roles from db for user to pick from
     db.selectAllRoles()
+      //display roles and select one
       .then(([roles]) => {
         prompt([
           {
@@ -229,41 +267,120 @@ function addEmp() {
           .then((inqData) => {
             empRole = inqData.selectedRole;
             console.log(empFirstName, empLastName, empRole);
-          }) // list employees for user to pick manager 
+          })
           .then(() => {
+            // display employees to pick manager
             db.selectAllEmployees()
+              // prompt to pick manager
               .then(([employee]) => {
                 prompt([
                   {
                     type: "list",
                     name: "selectedMgr",
-                    message: `\nSelect a manager for ${newFirstName} ${newLastName}:`,
-                    choices: employee.map(emp => ({ value: emp.id, name: `${emp.firstName} ${emp.lastName}` }))
+                    message: `\nSelect a manager for ${empFirstName} ${empLastName}:`,
+                    choices: employee.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
                   }
-                ])
+                ])//assign manager
                   .then((mgrData) => {
                     empManagerId = mgrData.selectedMgr;
-                    console.log(newFirstName, newLastName, newRole, empManagerId);
-                  })
-                  .then(() => promptAction());
-              })
-          })
-      })
-  })
+                    // xxxxxxx Insert Employee into Database
+                    db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
+                    .then (()=>
+                      promptAction()
+                    );
+                  }) // manager assigned
+              })//employees displayed and mgr selcted
+          }) //role assigned
+      })//role displayed and selected
+  })//roles retrieved from db
 }
+
+///////////////////////////////////////////////////////
+//  FUNCTION updateEmpRole
+//  -Retrieves employees from db for user to select 
+//  -Retrieves roles from db for user to select as the 
+//     employee's new role
+//  -Updates the employee in the db with the new role
+///////////////////////////////////////////////////////
 
 function updateEmpRole() {
   console.log("updating employee role");
-}
+  
+  db.selectAllEmployees()
+    // prompt to pick employee
+    .then(([employee]) => {
+      prompt([
+        {
+          type: "list",
+          name: "selectedEmp",
+          message: `\nSelect the employee to update:`,
+          choices: employee.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
+        }
+      ])//a
+        .then((mgrData) => {
+          employeeId = mgrData.selectedEmp;
+          // xxxxxxx Insert Employee into Database
+          db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
+          .then (()=>
+            promptAction()
+          );
+        }) // manager assigned
+    })//employees displayed and mgr selcted}
+ 
+
+
+  
+      // get roles from db for user to pick from
+      db.selectAllRoles()
+        //display roles and select one
+        .then(([roles]) => {
+          prompt([
+            {
+              type: "list",
+              name: "selectedRole",
+              message: `\nSelect a role for ${empFirstName} ${empLastName}:`,
+              choices: roles.map(r => ({ value: r.id, name: r.title }))
+            }
+          ])//assign the role
+            .then((inqData) => {
+              empRole = inqData.selectedRole;
+              console.log(empFirstName, empLastName, empRole);
+            })
+            .then(() => {
+              // display employees to pick manager
+              db.selectAllEmployees()
+                // prompt to pick manager
+                .then(([employee]) => {
+                  prompt([
+                    {
+                      type: "list",
+                      name: "selectedMgr",
+                      message: `\nSelect a manager for ${empFirstName} ${empLastName}:`,
+                      choices: employee.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
+                    }
+                  ])//assign manager
+                    .then((mgrData) => {
+                      empManagerId = mgrData.selectedMgr;
+                      // xxxxxxx Insert Employee into Database
+                      db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
+                      .then (()=>
+                        promptAction()
+                      );
+                    }) // manager assigned
+                })//employees displayed and mgr selcted
+            }) //role assigned
+        })//role displayed and selected
+    })//roles retrieved from db
+  }
 
 
 
 
 
 
-///////////////////////////////
-//     Kick it all off
-//////////////////////////////
+///////////////////////////////////////////////////////
+//                 PROGRAM START                     //
+///////////////////////////////////////////////////////
 
 function startPrompt() {
   return (promptAction())
