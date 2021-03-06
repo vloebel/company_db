@@ -303,25 +303,37 @@ function addEmp() {
 ///////////////////////////////////////////////////////
 
 function updateEmpRole() {
-  console.log("updating employee role");
-
   db.selectAllEmployees()
+    // TA advised moving my map up here to help with the promise flow
+    // this is a lot clearer than having it embedded...and works!
     // prompt to pick employee
     .then(([employee]) => {
-      prompt([
-        {
-          type: "list",
-          name: "selectedEmp",
-          message: `${dash}\nSelect an employee to update:\n${dash}`,
-          choices: employee.map(emp => ({ value: emp.id, name: `${emp.first_name} ${emp.last_name}` }))
-        }
-      ])//save the ID
+      const employeeArray = employee;
+      // make a list of employees to choose from in inquirer
+      const inquirerChoices =
+        employeeArray.map(({ id, first_name, last_name }) => (
+          {
+            name: `${first_name} ${last_name}`,
+            value: id
+          }
+        ));
+
+        prompt([
+          {
+            type: "list",
+            name: "selectedEmp",
+            message: `${dash}\nSelect an employee to update:\n${dash}`,
+            choices: inquirerChoices
+          }
+        ])
         .then((empData) => {
+          //save the Employe ID for updating
           let empId = empData.selectedEmp;
-        })
-        .then(() => {
+          console.log("update role gets HERE");
+
           db.selectAllRoles()
             .then(([roles]) => {
+              console.log("but not here");
               prompt([
                 {
                   type: "list",
