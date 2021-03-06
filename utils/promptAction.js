@@ -2,13 +2,14 @@ const inquirer = require('inquirer');
 const consoleTable = require('console.table');
 const db = require('../db');
 const connection = require('../db/connection');
-// const { listenerCount } = require('mysql2/typings/mysql/lib/Pool');
+
+
+
 /////////////////////////////////////
 // function promptAction
-//  * prompts for the next action on on the database
-
+//  * prompts for the next action on the database
 //////////////////////////////////////////////
-// to destructure - see lecture 1:48
+// to destructure -  1:48
 const promptAction = () => {
   return inquirer.prompt([
     {
@@ -30,7 +31,7 @@ const promptAction = () => {
     switch (inquirerData.newAction) {
       case "View Departments":
         viewDept();
-        return;
+        console.log("I am a fish")
       case "View Roles":
         viewRoles();
         return;
@@ -55,39 +56,34 @@ const promptAction = () => {
   });
 };
 
-// calls db method to display department table
 function viewDept() {
   db.selectAllDepartments()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
+      promptAction();
     })
-    .then(() =>
-      promptAction()
-    );
 }
-// calls db method to display role table
+
 function viewRoles() {
   db.selectAllRoles()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
     })
-    .then(() =>
-      promptAction()
-    );
+    promptAction();
+
 }
-// calls db method to display employee table
+
 function viewEmp() {
   db.selectAllEmployees()
     .then(([data]) => {
       console.log("\n");
       console.table(data);
     })
-    .then(() =>
-      promptAction()
-    );
+    promptAction();
 }
+
 
 function addDept() {
   inquirer.prompt([
@@ -235,7 +231,7 @@ function addEmp() {
             console.log(newFirstName, newLastName, newRole);
           })
       }) //prompt for role
-  }) //prompt for empData]
+  }) //prompt for empData]git
     .then(() => {
       // get a list of employees for user to pick manager
       db.selectAllEmployees()
