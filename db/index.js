@@ -17,7 +17,7 @@ class DB {
         `SELECT id, title, salary, department_id 
         FROM role`);
       }
-      
+      // plus role_id and manager_id
       selectAllEmployees() {
         return this.connection.promise().query(
           `SELECT id, first_name, last_name 

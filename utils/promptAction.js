@@ -133,7 +133,7 @@ function addRole() {
           if (/^[0-9]+$/.test(inputStr)) {
             return true;
           } else {
-            console.log(`\n Salary in dollars, for example, 25000:`);
+            console.log(`\n Enter salary in dollars, for example, 25000:`);
             return false;
           }
           // no input  
@@ -174,14 +174,74 @@ function addRole() {
 
 
 function addEmp() {
-  db.selectAllRoles()
-    .then(([data]) => {
-      console.log("\n");
-      pressAnyKey()
-        .then(() => {
-          promptAction();
-        });
-    })
+
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'firstName',
+      message: 'First Name:',
+      validate: inputStr => {
+        if (inputStr) {
+          // validate only letters entered
+          if (/^[a-zA-Z]+$/.test(inputStr)) {
+            return true;
+          } else {
+            console.log(`\nEnglish letters only, please:`);
+            return false;
+          }
+          // no inputStr 
+        } else return false;
+      }
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: 'Last Name:',
+      validate: inputStr => {
+        if (inputStr) {
+          // validate only letters entered
+          if (/^[a-zA-Z]+$/.test(inputStr)) {
+            return true;
+          } else {
+            console.log(`\nEnglish letters only, please`);
+            return false;
+          }
+          // no inputStr  
+        } else return false;
+      }
+    },
+
+  ]).then(empData => {
+    // force proper noun case
+    let newFirstName = empData.firstName = (empData.firstName.charAt(0).toUpperCase() + empData.firstName.slice(1).toLowerCase());
+    let newLastName = empData.lastName = (empData.lastName.charAt(0).toUpperCase() + empData.lastName.slice(1).toLowerCase());
+
+    let newRole, newManager;
+
+    db.selectAllRoles()
+      .then(([roles]) => {
+        inquirer.prompt([
+          {
+            type: "list",
+            name: "selectedRole",
+            message: `\nSelect a role for ${newFirstName} ${newLastName}:`,
+            choices: roles.map(r => ({ value: r.id, name: r.title }))
+          }
+        ])
+          .then((newData) => {
+            newRole = newData.selectedRole;
+            console.log(newFirstName, newLastName, newRole);
+          })
+      })
+
+
+    //--------------------------------
+
+  }) //deptData
+
+
+    .then(() => promptAction());
+
 }
 
 function updateEmpRole() {
