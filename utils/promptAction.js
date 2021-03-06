@@ -1,7 +1,5 @@
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
-const pressAnyKey = require('press-any-key');
-// const mysql = require('mysql2');
 const db = require('../db');
 const connection = require('../db/connection');
 // const { listenerCount } = require('mysql2/typings/mysql/lib/Pool');
@@ -174,7 +172,8 @@ function addRole() {
 
 
 function addEmp() {
-
+  // prompt for first and last name
+  var newFirstName, newLastName, newRole, newManagerId;
   inquirer.prompt([
     {
       type: 'input',
@@ -213,11 +212,14 @@ function addEmp() {
 
   ]).then(empData => {
     // force proper noun case
-    let newFirstName = empData.firstName = (empData.firstName.charAt(0).toUpperCase() + empData.firstName.slice(1).toLowerCase());
-    let newLastName = empData.lastName = (empData.lastName.charAt(0).toUpperCase() + empData.lastName.slice(1).toLowerCase());
+    newFirstName = (
+      empData.firstName.charAt(0).toUpperCase() +
+      empData.firstName.slice(1).toLowerCase());
+    newLastName = (
+      empData.lastName.charAt(0).toUpperCase() +
+      empData.lastName.slice(1).toLowerCase());
 
-    let newRole, newManager;
-
+    // get a list of roles from db for user to pick from
     db.selectAllRoles()
       .then(([roles]) => {
         inquirer.prompt([
@@ -232,13 +234,28 @@ function addEmp() {
             newRole = newData.selectedRole;
             console.log(newFirstName, newLastName, newRole);
           })
-      })
-
+      }) //prompt for role
+  }) //prompt for empData]
+    .then(() => {
+      // get a list of employees for user to pick manager
+      db.selectAllEmployees()
+        .then(([employee]) => {
+          inquirer.prompt([
+            {
+              type: "list",
+              name: "selectedMgr",
+              message: `\nSelect a manager for ${newFirstName} ${newLastName}:`,
+              choices: employee.map(emp => ({ value: emp.id, name: `${emp.firstName} ${emp.lastName}` }))
+            }
+          ])
+            .then((newData) => {
+              newManagerId = newData.selectedMgr;
+              console.log(newFirstName, newLastName, newRole, newManagerId);
+            })
+        })
+    }) // selectAllEmployees
 
     //--------------------------------
-
-  }) //deptData
-
 
     .then(() => promptAction());
 
