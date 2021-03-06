@@ -204,6 +204,7 @@ function addRole() {
 ///////////////////////////////////////////////////////
 
 function addEmp() {
+  var empFirstName, empLastName, empRole, empManagerId
   // prompt for first and last name
   prompt([
     {
@@ -243,11 +244,11 @@ function addEmp() {
 
   ]).then(emp => {
     // force proper noun case
-    let empFirstName = (
+    empFirstName = (
       emp.firstName.charAt(0).toUpperCase() +
       emp.firstName.slice(1).toLowerCase());
 
-    let empLastName = (
+    empLastName = (
       emp.lastName.charAt(0).toUpperCase() +
       emp.lastName.slice(1).toLowerCase());
 
@@ -264,9 +265,9 @@ function addEmp() {
           }
         ])//assign the role
           .then((inqData) => {
-            let empRole = inqData.selectedRole;
+            empRole = inqData.selectedRole;
             console.log(empFirstName, empLastName, empRole);
-          }) //&&&& this one closes off
+          }) 
           .then(() => {
             // display employees to pick manager
             db.selectAllEmployees()
@@ -281,7 +282,7 @@ function addEmp() {
                   }
                 ])//assign manager
                   .then((mgrData) => {
-                    let empManagerId = mgrData.selectedMgr;
+                    empManagerId = mgrData.selectedMgr;
                     //  Insert Employee into Database
                     db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
                     .then (()=>
