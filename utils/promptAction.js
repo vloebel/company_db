@@ -86,9 +86,9 @@ function viewEmp() {
       console.log("\n");
       console.table(data);
     })
-  .then(() =>
-    promptAction()
-  );
+    .then(() =>
+      promptAction()
+    );
 }
 
 function addDept() {
@@ -113,7 +113,7 @@ function addDept() {
 }
 
 function addRole() {
-  let newName, newSalary, newDepartment;
+
   inquirer.prompt([
     {
       type: "input",
@@ -142,36 +142,35 @@ function addRole() {
     },
 
   ]).then(deptData => {
-    newName = deptData.roleName;
-    newSalary = deptData.salary;
-
-    console.log(`New dept info name = ${deptData.roleName} sal = ${deptData.salary}`);
+    let newName = deptData.roleName;
+    let newSal = deptData.salary;
 
     db.selectAllDepartments()
       .then(([depts]) => {
-        //------------------------------
         inquirer.prompt([
           {
             type: "list",
             name: "selectedDept",
             message: `\nSelect a department:`,
-            choice: depts.map(d => ({ value: d.id, name: d.name }))
+            choices: depts.map(d => ({ value: d.id, name: d.name }))
           }
         ])
-          .then((moreData) => {
-            console.log(newTitle, newSalary, moreData.id)
+          .then((newData) => {
+            console.log({newData})
+            console.log(newName, newSal, newData.selectedDept);
+            db.addRole(newName, newSal, newData.selectedDept);
           })
-        })
+      })
 
 
-        //--------------------------------
+    //--------------------------------
 
-      }) //deptData
+  }) //deptData
 
 
-      .then(() => promptAction());
-      
-  }
+    .then(() => promptAction());
+
+}
 
 
 function addEmp() {

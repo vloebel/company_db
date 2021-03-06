@@ -34,7 +34,7 @@ class DB {
     
   addRole(title, salary, department_id) {
     return this.connection.promise().query(
-      `INSERT into department SET ?`,
+      `INSERT into role SET ?`,
       {
         title: title,
         salary: salary,
