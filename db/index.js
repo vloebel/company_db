@@ -1,4 +1,4 @@
-// const { removeListener } = require('./connection');
+const mysql = require('mysql2');
 const connection = require('./connection');
 
 class DB {
@@ -10,26 +10,29 @@ class DB {
     return this.connection.promise().query(
       `SELECT id, name 
       FROM department`);
-    }
+  }
     
-    selectAllRoles() {
-      return this.connection.promise().query(
-        `SELECT id, title, salary, department_id 
+  selectAllRoles() {
+    return this.connection.promise().query(
+      `SELECT id, title, salary, department_id 
         FROM role`);
-      }
-      // plus role_id and manager_id
-      selectAllEmployees() {
-        return this.connection.promise().query(
-          `SELECT id, first_name, last_name 
+  }
+  // plus role_id and manager_id
+  selectAllEmployees() {
+    return this.connection.promise().query(
+      `SELECT id, first_name, last_name 
           FROM employee`);
-      }
+  }
   
   addDepartment(name) {
     return this.connection.promise().query(
       `INSERT into department SET ?`,
       {
-        name:name
-      });
+        name: name
+      })
+      .catch(err => {
+        throw error;
+    })
   }
     
   addRole(title, salary, department_id) {
@@ -43,44 +46,9 @@ class DB {
   }
   
   
-  
-  
-  
-
   selectEmployeeById() {
     return this.connection.promise().query('SELECT id, first_name, last_name FROM employee WHERE id = ?;', id);
   }
-
-  // selectEmployeeByDept() {
-  //  return this.connection.promise().query(`SELECT first_name, last_name FROM employee
-  //  where employee.role_id = role.id AND role.department_id = department.id AND
-  //  WHERE department.id = ?,' id);
-  // }
-
-  // addEmployee() {
-  //   return this.connection.promise().query('INSERT INTO employee SET ?',
-  //     {
-  //       first_name: employee.firstName,
-  //       last_name: employee.lastName,
-  //       role: employee.role,
-  //       manager: employee.manager
-  //     },
-  //   );
-  // }
-
-  // deleteEmployee() {
-  //   return this.connection.promise().query('DELETE FROM employee WHERE ?',
-  //     {
-  //       employee_id: id;
-  //     },
-  //   );
-  // }
-  
-  //select all the employees in department x
-
-  // employee - role_id -> role(id)  role.department_id -> department(id)
-
-  //query method two etc
 
 }
 

@@ -1,17 +1,17 @@
-const inquirer = require('inquirer');
-const consoleTable = require('console.table');
 const db = require('../db');
 const connection = require('../db/connection');
-
+const consoleTable = require('console.table');
+const { prompt } = require('inquirer');
+const dash = "-----------------------------------"
 
 
 /////////////////////////////////////
 // function promptAction
 //  * prompts for the next action on the database
 //////////////////////////////////////////////
-// to destructure -  1:48
+
 const promptAction = () => {
-  return inquirer.prompt([
+  return prompt([
     {
       type: "list",
       name: "newAction",
@@ -31,7 +31,7 @@ const promptAction = () => {
     switch (inquirerData.newAction) {
       case "View Departments":
         viewDept();
-        console.log("I am a fish")
+        return;
       case "View Roles":
         viewRoles();
         return;
@@ -59,8 +59,11 @@ const promptAction = () => {
 function viewDept() {
   db.selectAllDepartments()
     .then(([data]) => {
-      console.log("\n");
+      console.log(`${dash}\n     DEPARTMENTS\n${dash}`);
       console.table(data);
+      console.log(`${dash}\n`);
+    })
+    .then(() => {
       promptAction();
     })
 }
@@ -68,25 +71,30 @@ function viewDept() {
 function viewRoles() {
   db.selectAllRoles()
     .then(([data]) => {
-      console.log("\n");
+      console.log(`${dash}\n     ROLES\n${dash}`);
       console.table(data);
+      console.log(`${dash}\n`);
     })
-    promptAction();
-
+    .then(() => {
+      promptAction();
+    })
 }
 
 function viewEmp() {
   db.selectAllEmployees()
     .then(([data]) => {
-      console.log("\n");
+      console.log(`${dash}\n     EMPLOYEES\n${dash}`);
       console.table(data);
+      console.log(`${dash}\n`);
     })
+    .then(() => {
     promptAction();
+  })
 }
 
 
 function addDept() {
-  inquirer.prompt([
+  prompt([
     {
       type: "input",
       name: "deptName",
@@ -108,7 +116,7 @@ function addDept() {
 
 function addRole() {
 
-  inquirer.prompt([
+  prompt([
     {
       type: "input",
       name: "roleName",
@@ -141,7 +149,7 @@ function addRole() {
 
     db.selectAllDepartments()
       .then(([depts]) => {
-        inquirer.prompt([
+        prompt([
           {
             type: "list",
             name: "selectedDept",
@@ -150,7 +158,7 @@ function addRole() {
           }
         ])
           .then((newData) => {
-            console.log({newData})
+            console.log({ newData })
             console.log(newName, newSal, newData.selectedDept);
             db.addRole(newName, newSal, newData.selectedDept);
           })
@@ -170,7 +178,7 @@ function addRole() {
 function addEmp() {
   // prompt for first and last name
   var newFirstName, newLastName, newRole, newManagerId;
-  inquirer.prompt([
+  prompt([
     {
       type: 'input',
       name: 'firstName',
@@ -218,7 +226,7 @@ function addEmp() {
     // get a list of roles from db for user to pick from
     db.selectAllRoles()
       .then(([roles]) => {
-        inquirer.prompt([
+        prompt([
           {
             type: "list",
             name: "selectedRole",
@@ -236,7 +244,7 @@ function addEmp() {
       // get a list of employees for user to pick manager
       db.selectAllEmployees()
         .then(([employee]) => {
-          inquirer.prompt([
+          prompt([
             {
               type: "list",
               name: "selectedMgr",
@@ -261,4 +269,18 @@ function updateEmpRole() {
   console.log("updating employee role");
 }
 
-module.exports = promptAction; 
+
+
+
+
+
+///////////////////////////////
+//     Kick it all off
+//////////////////////////////
+
+function startPrompt() {
+  return(promptAction())
+}
+
+
+module.exports = startPrompt; 

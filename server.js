@@ -1,6 +1,6 @@
 // const mysql = require('mysql2');
 // const db = require('./db');
-promptAction = require('./utils/promptAction');
+startPrompt = require('./utils/promptAction');
 
 console.log(
 `===========================================================
@@ -12,12 +12,5 @@ console.log(
 ===========================================================
   `);
 
-promptAction()
-  .then(() => {
-    console.log(`
-===========================================================
-                  Keep it Classy!
-===========================================================
-`);
-  }
-  );
+
+startPrompt();
