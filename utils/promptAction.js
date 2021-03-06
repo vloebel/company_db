@@ -6,8 +6,8 @@ const dash = "-----------------------------------"
 
 
 /////////////////////////////////////
-// function promptAction
-//  * prompts for the next action on the database
+// function promptAction prompts
+// for the next action on the database
 //////////////////////////////////////////////
 
 const promptAction = () => {
@@ -15,7 +15,7 @@ const promptAction = () => {
     {
       type: "list",
       name: "newAction",
-      message: "Use arrow keys to select:",
+      message: "Use arrow keys to select:\n",
       choices: [
         "View Departments",
         "View Roles",
@@ -59,7 +59,7 @@ const promptAction = () => {
 function viewDept() {
   db.selectAllDepartments()
     .then(([data]) => {
-      console.log(`${dash}\n     DEPARTMENTS\n${dash}`);
+      console.log(`${dash}\n DEPARTMENTS\n${dash}`);
       console.table(data);
       console.log(`${dash}\n`);
     })
@@ -71,7 +71,7 @@ function viewDept() {
 function viewRoles() {
   db.selectAllRoles()
     .then(([data]) => {
-      console.log(`${dash}\n     ROLES\n${dash}`);
+      console.log(`${dash}\n ROLES\n${dash}`);
       console.table(data);
       console.log(`${dash}\n`);
     })
@@ -83,7 +83,7 @@ function viewRoles() {
 function viewEmp() {
   db.selectAllEmployees()
     .then(([data]) => {
-      console.log(`${dash}\n     EMPLOYEES\n${dash}`);
+      console.log(`${dash}\n EMPLOYEES\n${dash}`);
       console.table(data);
       console.log(`${dash}\n`);
     })
@@ -91,7 +91,6 @@ function viewEmp() {
     promptAction();
   })
 }
-
 
 function addDept() {
   prompt([
@@ -107,9 +106,7 @@ function addDept() {
   ]).then(deptData => {
     db.addDepartment(deptData.deptName)
       .then(([data]) => {
-        // console.log("\n");
-        // console.table(data);
-        promptAction()
+         promptAction()
       })
   })
 }
@@ -159,18 +156,13 @@ function addRole() {
         ])
           .then((newData) => {
             console.log({ newData })
-            console.log(newName, newSal, newData.selectedDept);
-            db.addRole(newName, newSal, newData.selectedDept);
-          })
+            db.addRole(newName, newSal, newData.selectedDept)
+            .then(([data]) => {
+              promptAction()
+            })
+        })
       })
-
-
-    //--------------------------------
-
   }) //deptData
-
-
-    .then(() => promptAction());
 
 }
 
