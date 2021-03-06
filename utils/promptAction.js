@@ -304,6 +304,7 @@ function addEmp() {
 ///////////////////////////////////////////////////////
 
 function updateEmpRole() {
+  var empId, newRole;
   db.selectAllEmployees()
     // TA advised moving my map up here to help with the promise flow
     // this is a lot clearer than having it embedded...and works!
@@ -329,7 +330,7 @@ function updateEmpRole() {
         ])
         .then((empData) => {
           //save the Employe ID for updating
-          let empId = empData.selectedEmp;
+          empId = empData.selectedEmp;
           console.log("update role gets HERE");
 
           db.selectAllRoles()
@@ -344,10 +345,10 @@ function updateEmpRole() {
                 }
               ])//assign the role
                 .then((roleData) => {
-                  empRole = roleData.selectedRole;
-                  console.log(`ready to update employee ${empId} with role: ${empRole}`);
+                  newRole = roleData.selectedRole;
+                  console.log(`ready to update employee ${empId} with role: ${newRole}`);
                   // update employee role in Database
-                  db.updateEmployeeRole(empId, empRole)
+                  db.updateEmployeeRole(empId, newRole)
                     .then(() =>
                       promptAction()
                     );
