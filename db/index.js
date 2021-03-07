@@ -11,19 +11,41 @@ class DB {
       `SELECT id, name 
       FROM department`);
   }
-    
+  
   selectAllRoles() {
     return this.connection.promise().query(
       `SELECT id, title, salary, department_id 
-        FROM role`);
+      FROM role`);
   }
-  // plus role_id and manager_id
+  // returns everthing from role plus the linked department name
+  displayRoleData() {
+    return this.connection.promise().query(
+      `SELECT role.id, role.title, role.salary, department.name AS department
+      FROM role
+      LEFT JOIN department ON role.department_id = department.id
+      `);
+  }
+  
   selectAllEmployees() {
     return this.connection.promise().query(
       `SELECT id, first_name, last_name 
           FROM employee`);
   }
+
+  //Returns employee ids, first names, last names, 
+  //job titles, departments, salaries, and managers
+  displayEmployeeData() {
+    return this.connection.promise().query(
+      `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name as department, 
+      role.salary, CONCAT(e.first_name, ' ', e.last_name) AS manager
+      FROM employee 
+      LEFT JOIN role ON employee.role_id = role.id
+      LEFT JOIN department  ON role.department_id = department.id
+      LEFT JOIN employee AS e ON employee.manager_id = e.id`
+    );
+  }
   
+
   addDepartment(name) {
     return this.connection.promise().query(
       `INSERT into department SET ?`,

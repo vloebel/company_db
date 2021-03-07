@@ -53,6 +53,11 @@ const promptAction = () => {
       case "Update Employee Role":
         updateEmpRole();
       case "Exit":
+        console.log(
+          `===========================================================\n
+                =============  Keep it Klassy!  ============\n
+        ===========================================================`);
+        
         connection.end();
         return;
     }
@@ -76,13 +81,13 @@ function viewDept() {
     })
 }
 ///////////////////////////////////////////////////////
-//  FUNCTION viewRolse
-//  -Retrieves a list of roles from the db
-//    and displays for user
+//  FUNCTION viewRoles
+//  -Displays the columns from roles plus their linked
+//     department names
 ///////////////////////////////////////////////////////
 
 function viewRoles() {
-  db.selectAllRoles()
+  db.displayRoleData()
     .then(([data]) => {
       console.log(`${dash}\n ROLES\n${dash}`);
       console.table(data);
@@ -94,12 +99,12 @@ function viewRoles() {
 }
 ///////////////////////////////////////////////////////
 //  FUNCTION viewEmp
-//  -Retrieves a list of employees from the db
-//    and displays for user
+//  -Displays employee information together with the
+//   linked columns for department and manager
 ///////////////////////////////////////////////////////
 
 function viewEmp() {
-  db.selectAllEmployees()
+  db.displayEmployeeData()
     .then(([data]) => {
       console.log(`${dash}\n EMPLOYEES\n${dash}`);
       console.table(data);
@@ -354,7 +359,7 @@ function updateEmpRole() {
                     );
                 }) // role assigned
             })//roles displayed and  selcted   
-          
+
         })//roles retrieved from db
     });
 }
@@ -363,6 +368,17 @@ function updateEmpRole() {
 ///////////////////////////////////////////////////////
 //                 PROGRAM START                     //
 ///////////////////////////////////////////////////////
+
+console.log(
+`===========================================================
+=============  Classy Coding Company Presents  ============
+================= CLASSY COMPANY MANAGER ================== 
+  Your one stop shop for viewing and updating
+    information about our departments, employee roles,
+    and most importantly, our classy employees.
+===========================================================
+  `);
+  
 
 function startPrompt() {
   return (promptAction())

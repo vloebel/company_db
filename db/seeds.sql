@@ -20,4 +20,4 @@ INSERT INTO employee
 ('Linda','Wu','3','2'),
 ('Jackson','Baretta','1','2'),
 ('Peregrin','Nguyen','2','6'),
-('Cory','Lawrence','1','0');
+('Cory','Lawrence','1','2');
