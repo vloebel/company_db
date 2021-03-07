@@ -1,11 +1,13 @@
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  # Company Database
+  ![banner](./assets/rm-banner.jpg)
+  # Classy Company Database
+  
   ## Description  
   This project creates a MySQL company database that is populated by answering questions through a command line interface. It consists of three linked tables that store employee, department, and role (job title) information.
 
   ### Link to YouTube Demonstration
-  [YouTube Demonstration](xxxxx)  TO BE PROVIDED
+  [Classy Coding Company Video](https://www.youtube.com/watch?v=PSYcWF03g5s) 
   
   ## Table of Contents  
   * [Installation](#Installation)  
