@@ -48,7 +48,7 @@ class DB {
 
   addDepartment(name) {
     return this.connection.promise().query(
-      `INSERT into department SET ?`,
+      `INSERT INTO department SET ?`,
       {
         name: name
       })
@@ -59,7 +59,7 @@ class DB {
     
   addRole(title, salary, department_id) {
     return this.connection.promise().query(
-      `INSERT into role SET ?`,
+      `INSERT INTO role SET ?`,
       {
         title: title,
         salary: salary,
@@ -69,7 +69,7 @@ class DB {
   
   addEmployee(fname, lname, role, mgr) {
     return this.connection.promise().query(
-      `INSERT into employee SET ?`,
+      `INSERT INTO employee SET ?`,
       {
         first_name: fname,
         last_name: lname,
@@ -77,16 +77,28 @@ class DB {
         manager_id: mgr
       });
   }
-  updateEmployeeRole(id, role) {
+  updateEmployeeRole(role, id) {
     return this.connection.promise().query(
-      `UPDATE employee WHERE ? SET ?`,
+      `UPDATE employee SET ? WHERE ?`,
       [{
-        id: id
+        role_id: role
       },
       {
-        role_id: role
+        id: id
       }]);
   }
-}     
+
+  deleteEmployee(id) {
+    return this.connection.promise().query(
+      'DELETE FROM employee WHERE ?',
+      {
+        id: id
+      }
+    )
+      .catch(err => {
+        throw error;
+      })
+  }
+}
 
 module.exports = new DB(connection);

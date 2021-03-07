@@ -2,7 +2,7 @@ const db = require('../db');
 const connection = require('../db/connection');
 const consoleTable = require('console.table');
 const { prompt } = require('inquirer');
-const dash = "-----------------------------------"
+const separator = "---------------------------------------------"
 
 
 ///////////////////////////////////////////////////////
@@ -14,6 +14,7 @@ const dash = "-----------------------------------"
 ///////////////////////////////////////////////////////
 
 const promptAction = () => {
+  console.log(`${separator}`)
   return prompt([
     {
       type: "list",
@@ -27,6 +28,7 @@ const promptAction = () => {
         "Add Role",
         "Add Employee",
         "Update Employee Role",
+        "Delete Employee",
         "Exit"
       ],
     },
@@ -52,6 +54,10 @@ const promptAction = () => {
         return;
       case "Update Employee Role":
         updateEmpRole();
+        return;
+      case "Delete Employee":
+        deleteEmp();
+        return;
       case "Exit":
         console.log(
           `===========================================================\n
@@ -72,9 +78,9 @@ const promptAction = () => {
 function viewDept() {
   db.selectAllDepartments()
     .then(([data]) => {
-      console.log(`${dash}\n DEPARTMENTS\n${dash}`);
+      console.log(`${separator}\n DEPARTMENTS\n${separator}`);
       console.table(data);
-      console.log(`${dash}\n`);
+      console.log(`${separator}\n`);
     })
     .then(() => {
       promptAction();
@@ -89,9 +95,9 @@ function viewDept() {
 function viewRoles() {
   db.displayRoleData()
     .then(([data]) => {
-      console.log(`${dash}\n ROLES\n${dash}`);
+      console.log(`${separator}\n ROLES\n${separator}`);
       console.table(data);
-      console.log(`${dash}\n`);
+      console.log(`${separator}\n`);
     })
     .then(() => {
       promptAction();
@@ -106,9 +112,9 @@ function viewRoles() {
 function viewEmp() {
   db.displayEmployeeData()
     .then(([data]) => {
-      console.log(`${dash}\n EMPLOYEES\n${dash}`);
+      console.log(`${separator}${separator}\n EMPLOYEES\n${separator}${separator}`);
       console.table(data);
-      console.log(`${dash}\n`);
+      console.log(`${separator}\n`);
     })
     .then(() => {
       promptAction();
@@ -271,7 +277,6 @@ function addEmp() {
         ])//assign the role
           .then((inqData) => {
             empRole = inqData.selectedRole;
-            console.log(empFirstName, empLastName, empRole);
           }) 
           .then(() => {
             // display employees to pick manager
@@ -311,9 +316,7 @@ function addEmp() {
 function updateEmpRole() {
   var empId, newRole;
   db.selectAllEmployees()
-    // TA advised moving my map up here to help with the promise flow
-    // this is a lot clearer than having it embedded...and works!
-    // prompt to pick employee
+      // prompt to pick employee
     .then(([employee]) => {
       const employeeArray = employee;
       // make a list of employees to choose from in inquirer
@@ -329,18 +332,15 @@ function updateEmpRole() {
           {
             type: "list",
             name: "selectedEmp",
-            message: `${dash}\nSelect an employee to update:\n${dash}`,
+            message: `${separator}\nSelect an employee to update:\n${separator}`,
             choices: inquirerChoices
           }
         ])
         .then((empData) => {
           //save the Employe ID for updating
           empId = empData.selectedEmp;
-          console.log("update role gets HERE");
-
           db.selectAllRoles()
             .then(([roles]) => {
-              console.log("but not here");
               prompt([
                 {
                   type: "list",
@@ -351,9 +351,8 @@ function updateEmpRole() {
               ])//assign the role
                 .then((roleData) => {
                   newRole = roleData.selectedRole;
-                  console.log(`ready to update employee ${empId} with role: ${newRole}`);
                   // update employee role in Database
-                  db.updateEmployeeRole(empId, newRole)
+                  db.updateEmployeeRole(newRole, empId)
                     .then(() =>
                       promptAction()
                     );
@@ -364,6 +363,47 @@ function updateEmpRole() {
     });
 }
 
+///////////////////////////////////////////////////////
+//  FUNCTION deleteEmp
+//  -Retrieves employees from db for user to select 
+//  -Retrieves roles from db for user to select as the 
+//     employee's new role
+//  -Updates the employee in the db with the new role
+///////////////////////////////////////////////////////
+
+function deleteEmp() {
+  var empId;
+  db.selectAllEmployees()
+    // prompt to pick employee
+    .then(([employee]) => {
+      const employeeArray = employee;
+      // make a list of employees to choose from in inquirer
+      const inquirerChoices =
+        employeeArray.map(({ id, first_name, last_name }) => (
+          {
+            name: `${first_name} ${last_name}`,
+            value: id
+          }
+        ));
+
+      prompt([
+        {
+          type: "list",
+          name: "selectedEmp",
+          message: `${separator}\nSelect an employee to delete:\n${separator}`,
+          choices: inquirerChoices
+        }
+      ])
+        .then((empData) => {
+          empId = empData.selectedEmp;
+          db.deleteEmployee(empId)
+            .then(() => {
+              console.log(`** Deleted ** `);
+              promptAction();
+            });
+        });
+    });
+}
 
 ///////////////////////////////////////////////////////
 //                 PROGRAM START                     //
