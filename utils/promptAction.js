@@ -3,6 +3,10 @@ const connection = require('../db/connection');
 const consoleTable = require('console.table');
 const { prompt } = require('inquirer');
 const separator = "---------------------------------------------"
+const classyBanner =
+`===========================================================\n
+      =============  Keep it Klassy!  ============\n
+===========================================================`;
 
 
 ///////////////////////////////////////////////////////
@@ -59,11 +63,7 @@ const promptAction = () => {
         deleteEmp();
         return;
       case "Exit":
-        console.log(
-          `===========================================================\n
-                =============  Keep it Klassy!  ============\n
-        ===========================================================`);
-        
+        console.log(classyBanner);
         connection.end();
         return;
     }
@@ -202,7 +202,7 @@ function addRole() {
               })
           })
       })
-  }) //deptData
+  })
 }
 
 ///////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ function addEmp() {
         ])//assign the role
           .then((inqData) => {
             empRole = inqData.selectedRole;
-          }) 
+          })
           .then(() => {
             // display employees to pick manager
             db.selectAllEmployees()
@@ -295,9 +295,9 @@ function addEmp() {
                     empManagerId = mgrData.selectedMgr;
                     //  Insert Employee into Database
                     db.addEmployee(empFirstName, empLastName, empRole, empManagerId)
-                    .then (()=>
-                      promptAction()
-                    );
+                      .then(() =>
+                        promptAction()
+                      );
                   }) // manager assigned
               })//employees displayed and mgr selcted
           }) //role assigned
@@ -316,7 +316,7 @@ function addEmp() {
 function updateEmpRole() {
   var empId, newRole;
   db.selectAllEmployees()
-      // prompt to pick employee
+    // prompt to pick employee
     .then(([employee]) => {
       const employeeArray = employee;
       // make a list of employees to choose from in inquirer
@@ -328,14 +328,14 @@ function updateEmpRole() {
           }
         ));
 
-        prompt([
-          {
-            type: "list",
-            name: "selectedEmp",
-            message: `${separator}\nSelect an employee to update:\n${separator}`,
-            choices: inquirerChoices
-          }
-        ])
+      prompt([
+        {
+          type: "list",
+          name: "selectedEmp",
+          message: `${separator}\nSelect an employee to update:\n${separator}`,
+          choices: inquirerChoices
+        }
+      ])
         .then((empData) => {
           //save the Employe ID for updating
           empId = empData.selectedEmp;
@@ -417,12 +417,12 @@ console.log(
     information about our departments, employee roles,
     and most importantly, our classy employees.
 ===========================================================
-  `);
-  
+`);
+
 
 function startPrompt() {
   return (promptAction())
 }
 
 
-module.exports = startPrompt; 
+module.exports = startPrompt;
